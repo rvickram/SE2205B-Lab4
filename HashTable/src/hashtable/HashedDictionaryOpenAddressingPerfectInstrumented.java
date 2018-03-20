@@ -141,13 +141,12 @@ public class HashedDictionaryOpenAddressingPerfectInstrumented<K,V> implements D
         return !foundFactor;
     } // end getNextPrime    
     
-    
-    private int getHashIndex(K key){
+    private int getHashGenerator(Object key){
         int val = key.toString().hashCode();
         val = Math.abs(val);
-        val = val % hashTable.length;
+        val = (3*val + 2)%hashTable.length;
         return val;
-    } // end getHashIndex
+    }//end getHashGenerator
     
     
     @Override
@@ -156,7 +155,7 @@ public class HashedDictionaryOpenAddressingPerfectInstrumented<K,V> implements D
         checkInitialization();
         
         V result = null;
-        int index = getHashIndex(key);
+        int index = getHashGenerator(key);
         index = locate(index, key);
         
         if (index != -1)
@@ -174,7 +173,7 @@ public class HashedDictionaryOpenAddressingPerfectInstrumented<K,V> implements D
         
         V removedValue = null;
         
-        int index = getHashIndex(key);
+        int index = getHashGenerator(key);
         index = locate(index, key);
         
         if (index != -1)
@@ -225,7 +224,7 @@ public class HashedDictionaryOpenAddressingPerfectInstrumented<K,V> implements D
         } else {
             V oldValue; // Value to return
 
-            int index = getHashIndex(key);
+            int index = getHashGenerator(key);
             index = probe(index, key); // Check for and resolve collision
 
             // Assertion: index is within legal range for hashTable
@@ -319,7 +318,7 @@ public class HashedDictionaryOpenAddressingPerfectInstrumented<K,V> implements D
     {
         boolean result = false;
         
-        int index = getHashIndex(key);
+        int index = getHashGenerator(key);
         index = locate(index, key);
         
         if (index != -1)

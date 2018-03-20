@@ -152,14 +152,13 @@ public class HashedDictionaryOpenAddressingDoubleInstrumented<K,V> implements Di
         return val;
     } // end getHashIndex
     
-// ADD IN CODE FOR THE SECOND HASH FUNCION
-//>>>>>>>>>>>>> ADDED CODE >>>>>>>>>>>>>>
-  //  private int getSecondHashIndex(K key){
-  
-    
-    
-  //  } // end getHashIndex
-//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+    //SECOND HASH FUNCTION
+    private int getSecondHashIndex(K key){
+        int val = key.toString().hashCode();
+        val = Math.abs(val);
+        val = (val/hashTable.length)%(hashTable.length - 1) + 1;
+        return val;
+    } // end getHashIndex
     
     @Override
     public V getValue(K key)
@@ -207,7 +206,7 @@ public class HashedDictionaryOpenAddressingDoubleInstrumented<K,V> implements Di
 // MODIFY THIS FOR DOUBLE HASHING
 //>>>>>>>>>>>>> ADDED CODE >>>>>>>>>>>>>>
         // First compute the second hash value
-     
+        
         
         
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -218,11 +217,7 @@ public class HashedDictionaryOpenAddressingDoubleInstrumented<K,V> implements Di
                 key.equals(hashTable[index].getKey()) )
                     found = true; // key found
             else // follow probe sequence
-                
-//>>>>>>>>>>>>> MODIFIED THE FOLOWING FOR DOUBLE PROBING >>>>>>>>>>>
-               index = (index + 1) % hashTable.length; // Linear probing
-//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-                
+               index = (index + getSecondHashIndex(key)) % hashTable.length; // Linear probing
 //>>>>>>>>>>>>> ADDED CODE to increase total probing >>>>>>>>>>>>>>
           
 
@@ -306,7 +301,7 @@ public class HashedDictionaryOpenAddressingDoubleInstrumented<K,V> implements Di
                     found = true; // Key found
                 } else // Follow probe sequence
                 {
-                    index = (index + 1) % hashTable.length; // Linear probing
+                    index = (index + getSecondHashIndex(key)) % hashTable.length; // Linear probing
                 }
             } else // Skip entries that were removed
             {
