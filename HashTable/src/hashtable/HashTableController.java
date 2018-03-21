@@ -75,6 +75,7 @@ public class HashTableController implements Initializable {
     }
 
     public void HashPerformance() {
+        
         int insertionLinearProbes = 0, insertionDoubleProbes = 0, insertionPerfectProbes = 0;
         int successLinearProbes = 0, successDoubleProbes = 0, successPerfectProbes = 0;
         int failureLinearProbes = 0, failureDoubleProbes = 0, failurePerfectProbes = 0;
@@ -88,11 +89,13 @@ public class HashTableController implements Initializable {
         this.console.clear();
 
         for (int i = 0; i < trials; i++) {
+            
+            
             stringData = generateRandomData(insertCount);
 
             linearTable = new HashedDictionaryOpenAddressingLinearInstrumented<String, String>(startingSize);
             doubleTable = new HashedDictionaryOpenAddressingDoubleInstrumented<String, String>(startingSize);
-            perfectTable = new HashedDictionaryOpenAddressingPerfectInstrumented<String, String>(startingSize);
+            perfectTable = new HashedDictionaryOpenAddressingPerfectInstrumented<String, String>(startingSize);            
 
             linearTable.setMaxLoadFactor(load);
             doubleTable.setMaxLoadFactor(load);
@@ -103,10 +106,13 @@ public class HashTableController implements Initializable {
             HashedDictionaryOpenAddressingPerfectInstrumented.resetTotalProbes();
 
             this.console.appendText("The data is: \n" + getString(stringData) + "\n\n");
+            System.out.println("Trial " + (i+1) + "/" + trials);
             insertAllData(linearTable, stringData);
+            System.out.println("Added linear");
             insertAllData(doubleTable, stringData);
+            System.out.println("Added double");
             insertAllData(perfectTable, stringData);
-            System.out.println("added to tables");
+            System.out.println("Added perfect");
 
             insertionLinearProbes += HashedDictionaryOpenAddressingLinearInstrumented.getTotalProbes();
             insertionDoubleProbes += HashedDictionaryOpenAddressingDoubleInstrumented.getTotalProbes();

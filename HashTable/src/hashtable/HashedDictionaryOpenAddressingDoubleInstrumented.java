@@ -313,18 +313,9 @@ public class HashedDictionaryOpenAddressingDoubleInstrumented<K,V> implements Di
                 if (removedStateIndex == -1) {
                     removedStateIndex = index;
                 }
-                
-////// Modify the following for Double probing  ////////////
                 index = (index + offset) % hashTable.length; // Double probing
                 totalProbes++;
-////////////////////////////////
             } // end if
-            
-//>>>>>>>>>>>>> ADDED CODE to increase total probing >>>>>>>>>>>>>>
-       
-
-
-//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< 
         } // end while
         
         
