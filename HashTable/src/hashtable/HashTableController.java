@@ -88,7 +88,7 @@ public class HashTableController implements Initializable {
         this.console.clear();
 
         for (int i = 0; i < trials; i++) {
-            stringData = generateRandomData(insertCount*2);
+            stringData = generateRandomData(insertCount);
 
             linearTable = new HashedDictionaryOpenAddressingLinearInstrumented<String, String>(startingSize);
             doubleTable = new HashedDictionaryOpenAddressingDoubleInstrumented<String, String>(startingSize);
@@ -106,6 +106,7 @@ public class HashTableController implements Initializable {
             insertAllData(linearTable, stringData);
             insertAllData(doubleTable, stringData);
             insertAllData(perfectTable, stringData);
+            System.out.println("added to tables");
 
             insertionLinearProbes += HashedDictionaryOpenAddressingLinearInstrumented.getTotalProbes();
             insertionDoubleProbes += HashedDictionaryOpenAddressingDoubleInstrumented.getTotalProbes();
@@ -267,15 +268,31 @@ public class HashTableController implements Initializable {
 
     private String[] generateRandomData(int size) {
         String result[] = new String[size];
+        System.out.println("size is: " + size);
         HashedDictionaryOpenAddressingLinear<String, String> checkTable = new HashedDictionaryOpenAddressingLinear<String, String>();
 
         String firstSyl[] = {"ther", "fal", "sol", "cal", "com", "don", "gan", "tel", "fren", "ras", "tar", "men", "tri", "cap", "har"};
         String secondSyl[] = {"mo", "ta", "ra", "te", "bo", "bi", "du", "ca", "dan", "sen", "di", "no", "fe", "mi", "so"};
         String thirdSyl[] = {"tion", "ral", "tal", "ly", "nance", "tor", "ing", "ger", "ten", "ful", "son", "dar", "der", "den", "ton"};
 
-        // ADD CODE TO GENERATE THE RANDOM WORDS
-        //>>>>>>>>>>> ADDED CODE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-        //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+        //generate unique random words and add them to result[]
+        Random rand = new Random();
+        for(int i = 0; i < size; i++){
+            String word = firstSyl[rand.nextInt(firstSyl.length)] + 
+                            secondSyl[rand.nextInt(secondSyl.length)] + 
+                            thirdSyl[rand.nextInt(thirdSyl.length)];
+            if(!checkTable.contains(word)){ 
+                checkTable.add(word, word); //if no matches found, add word
+                result[i] = word;
+                
+            } else{
+                i--;
+            }
+        }
+        for(int i = 0; i < size; i++){
+            System.out.println(result[i]);
+        }
+        
         return result;
     }
 

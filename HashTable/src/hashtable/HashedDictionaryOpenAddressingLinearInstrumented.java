@@ -33,13 +33,13 @@ public class HashedDictionaryOpenAddressingLinearInstrumented<K,V> implements Di
     
     public static void resetTotalProbes()
     {
-       // add your code here
+       totalProbes = 0;
     }  
 
     public static int getTotalProbes()
     {
         // Change the return statement
-        return 0;
+        return totalProbes;
     }  
     
     public HashedDictionaryOpenAddressingLinearInstrumented()
@@ -192,6 +192,7 @@ public class HashedDictionaryOpenAddressingLinearInstrumented<K,V> implements Di
     private int locate(int index, K key)
     {
         boolean found = false;
+        totalProbes++; //increment probe by one before to account for empty slots
         
         while ( !found && (hashTable[index] != null) )
         {
@@ -200,6 +201,7 @@ public class HashedDictionaryOpenAddressingLinearInstrumented<K,V> implements Di
                     found = true; // key found
             else // follow probe sequence
                 index = (index + 1) % hashTable.length; // Linear probing
+                totalProbes++;
         } // end while
         
         // Assertion: Either key or  null is found at hashTable[index]
@@ -252,6 +254,7 @@ public class HashedDictionaryOpenAddressingLinearInstrumented<K,V> implements Di
     // Precondition: checkInitialization has been called.
     private int probe(int index, K key) {
         boolean found = false;
+        totalProbes++;
         int removedStateIndex = -1; // Index of first location in
         // removed state
 
@@ -262,6 +265,7 @@ public class HashedDictionaryOpenAddressingLinearInstrumented<K,V> implements Di
                 } else // Follow probe sequence
                 {
                     index = (index + 1) % hashTable.length; // Linear probing
+                    totalProbes++;
                 }
             } else // Skip entries that were removed
             {
@@ -270,6 +274,7 @@ public class HashedDictionaryOpenAddressingLinearInstrumented<K,V> implements Di
                     removedStateIndex = index;
                 }
                 index = (index + 1) % hashTable.length; // Linear probing
+                totalProbes++;
             } // end if
         } // end while
         

@@ -34,13 +34,12 @@ public class HashedDictionaryOpenAddressingDoubleInstrumented<K,V> implements Di
     
     public static void resetTotalProbes()
     {
-       // add your code here
+       totalProbes = 0;
     }  
 
     public static int getTotalProbes()
     {
-        // Change the return statement
-        return 0;
+        return totalProbes;
     }  
     
     
@@ -202,6 +201,7 @@ public class HashedDictionaryOpenAddressingDoubleInstrumented<K,V> implements Di
     private int locate(int index, K key)
     {
         boolean found = false;
+        totalProbes++;
 
 // MODIFY THIS FOR DOUBLE HASHING
 //>>>>>>>>>>>>> ADDED CODE >>>>>>>>>>>>>>
@@ -216,8 +216,10 @@ public class HashedDictionaryOpenAddressingDoubleInstrumented<K,V> implements Di
             if ( hashTable[index].isIn() &&
                 key.equals(hashTable[index].getKey()) )
                     found = true; // key found
-            else // follow probe sequence
-               index = (index + getSecondHashIndex(key)) % hashTable.length; // Linear probing
+            else{ // follow probe sequence
+               index = (index + getSecondHashIndex(key)) % hashTable.length; // Double probing
+               totalProbes++;
+            }
 //>>>>>>>>>>>>> ADDED CODE to increase total probing >>>>>>>>>>>>>>
           
 
@@ -283,11 +285,12 @@ public class HashedDictionaryOpenAddressingDoubleInstrumented<K,V> implements Di
     // Precondition: checkInitialization has been called.
     private int probe(int index, K key) {
         boolean found = false;
+        totalProbes++;
         
         // MODIFY THIS FOR DOUBLE HASHING
 //>>>>>>>>>>>>> ADDED CODE >>>>>>>>>>>>>>
         // First compute the second hash value
-      
+        int offset = getSecondHashIndex(key);
         
         
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -301,7 +304,8 @@ public class HashedDictionaryOpenAddressingDoubleInstrumented<K,V> implements Di
                     found = true; // Key found
                 } else // Follow probe sequence
                 {
-                    index = (index + getSecondHashIndex(key)) % hashTable.length; // Linear probing
+                    index = (index + offset) % hashTable.length; // Double probing
+                    totalProbes++;
                 }
             } else // Skip entries that were removed
             {
@@ -311,7 +315,8 @@ public class HashedDictionaryOpenAddressingDoubleInstrumented<K,V> implements Di
                 }
                 
 ////// Modify the following for Double probing  ////////////
-                index = (index + 1) % hashTable.length; // Linear probing
+                index = (index + offset) % hashTable.length; // Double probing
+                totalProbes++;
 ////////////////////////////////
             } // end if
             

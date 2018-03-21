@@ -33,13 +33,12 @@ public class HashedDictionaryOpenAddressingPerfectInstrumented<K,V> implements D
     
     public static void resetTotalProbes()
     {
-       // add your code here
+       totalProbes = 0;
     }  
 
     public static int getTotalProbes()
     {
-        // Change the return statement
-        return 0;
+        return totalProbes;
     }  
     
     public HashedDictionaryOpenAddressingPerfectInstrumented()
@@ -141,10 +140,8 @@ public class HashedDictionaryOpenAddressingPerfectInstrumented<K,V> implements D
         return !foundFactor;
     } // end getNextPrime    
     
-    private int getHashGenerator(Object key){
-        int val = key.toString().hashCode();
-        val = Math.abs(val);
-        val = (3*val + 2)%hashTable.length;
+    private int getHashGenerator(Object key){ //generates a "random" key
+        int val = Math.abs(3*key.toString().hashCode() + 2) % hashTable.length;
         return val;
     }//end getHashGenerator
     
@@ -191,14 +188,18 @@ public class HashedDictionaryOpenAddressingPerfectInstrumented<K,V> implements D
     private int locate(int index, K key)
     {
         boolean found = false;
+        totalProbes++;
+        int offset = getHashGenerator(key);
         
         while ( !found && (hashTable[index] != null) )
         {
             if ( hashTable[index].isIn() &&
                 key.equals(hashTable[index].getKey()) )
                     found = true; // key found
-            else // follow probe sequence
-                index = (index + 1) % hashTable.length; // Linear probing
+            else{ // follow probe sequence
+                index = (index + offset) % hashTable.length; // Perfect probing "random"
+                totalProbes++;
+            }
         } // end while
         
         // Assertion: Either key or  null is found at hashTable[index]
@@ -251,6 +252,8 @@ public class HashedDictionaryOpenAddressingPerfectInstrumented<K,V> implements D
     // Precondition: checkInitialization has been called.
     private int probe(int index, K key) {
         boolean found = false;
+        totalProbes++;
+        int offset = getHashGenerator(key);
         int removedStateIndex = -1; // Index of first location in
         // removed state
 
@@ -260,7 +263,8 @@ public class HashedDictionaryOpenAddressingPerfectInstrumented<K,V> implements D
                     found = true; // Key found
                 } else // Follow probe sequence
                 {
-                    index = (index + 1) % hashTable.length; // Linear probing
+                    index = (index + offset) % hashTable.length; // Perfect probing "random"
+                    totalProbes++;
                 }
             } else // Skip entries that were removed
             {
@@ -268,7 +272,8 @@ public class HashedDictionaryOpenAddressingPerfectInstrumented<K,V> implements D
                 if (removedStateIndex == -1) {
                     removedStateIndex = index;
                 }
-                index = (index + 1) % hashTable.length; // Linear probing
+                index = (index + offset) % hashTable.length; // Linear probing
+                totalProbes++;
             } // end if
         } // end while
         
