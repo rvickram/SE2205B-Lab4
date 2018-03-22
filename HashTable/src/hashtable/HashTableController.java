@@ -91,7 +91,7 @@ public class HashTableController implements Initializable {
         for (int i = 0; i < trials; i++) {
             
             
-            stringData = generateRandomData(insertCount);
+            stringData = generateRandomData(insertCount*2);
 
             linearTable = new HashedDictionaryOpenAddressingLinearInstrumented<String, String>(startingSize);
             doubleTable = new HashedDictionaryOpenAddressingDoubleInstrumented<String, String>(startingSize);
@@ -106,36 +106,65 @@ public class HashTableController implements Initializable {
             HashedDictionaryOpenAddressingPerfectInstrumented.resetTotalProbes();
 
             this.console.appendText("The data is: \n" + getString(stringData) + "\n\n");
-            System.out.println("Trial " + (i+1) + "/" + trials);
-            insertAllData(linearTable, stringData);
-            System.out.println("Added linear");
-            insertAllData(doubleTable, stringData);
-            System.out.println("Added double");
-            insertAllData(perfectTable, stringData);
-            System.out.println("Added perfect");
+            insertHalfData(linearTable, stringData);
+            insertHalfData(doubleTable, stringData);
+            insertHalfData(perfectTable, stringData);
 
             insertionLinearProbes += HashedDictionaryOpenAddressingLinearInstrumented.getTotalProbes();
             insertionDoubleProbes += HashedDictionaryOpenAddressingDoubleInstrumented.getTotalProbes();
             insertionPerfectProbes += HashedDictionaryOpenAddressingPerfectInstrumented.getTotalProbes();
 
             // ADD CODE HERE TO DO SUCCESSFULL AND FAILURE SEARCHES
+            System.out.println("Searching...");
+            HashedDictionaryOpenAddressingLinearInstrumented.resetTotalProbes();
+            HashedDictionaryOpenAddressingDoubleInstrumented.resetTotalProbes();
+            HashedDictionaryOpenAddressingPerfectInstrumented.resetTotalProbes();
+            
+            this.console.appendText("The data is: \n" + getString(stringData) + "\n\n");
+            searchFirstHalf(linearTable, stringData);
+            searchFirstHalf(doubleTable,stringData);
+            searchFirstHalf(perfectTable,stringData);
+            
+            successLinearProbes += HashedDictionaryOpenAddressingLinearInstrumented.getTotalProbes();
+            successDoubleProbes += HashedDictionaryOpenAddressingDoubleInstrumented.getTotalProbes();
+            successPerfectProbes += HashedDictionaryOpenAddressingPerfectInstrumented.getTotalProbes();
+            
+            HashedDictionaryOpenAddressingLinearInstrumented.resetTotalProbes();
+            HashedDictionaryOpenAddressingDoubleInstrumented.resetTotalProbes();
+            HashedDictionaryOpenAddressingPerfectInstrumented.resetTotalProbes();
+            
+            this.console.appendText("The data is: \n" + getString(stringData) + "\n\n");
+            searchSecondHalf(linearTable, stringData);
+            searchSecondHalf(doubleTable,stringData);
+            searchSecondHalf(perfectTable,stringData);
+            
+            failureLinearProbes += HashedDictionaryOpenAddressingLinearInstrumented.getTotalProbes();
+            failureDoubleProbes += HashedDictionaryOpenAddressingDoubleInstrumented.getTotalProbes();
+            failurePerfectProbes += HashedDictionaryOpenAddressingPerfectInstrumented.getTotalProbes();
+            
+            System.out.println("Trial " + i);
         }
 
         this.console.appendText("Linear hashing\n");
         this.console.appendText("    Total probes for inserting data values: " + insertionLinearProbes + "\n\n");
         this.console.appendText("       Average probes made: " + insertionLinearProbes / (float) (trials * insertCount) + "\n\n");
         // ADD CODE HERE TO REPORT THE RESULTS FOR THE SUCCESS AND FAILURE SEARCHES
+        this.console.appendText("    Average probes for successful searches: " + successLinearProbes/(float) (trials*insertCount) + "\n\n");
+        this.console.appendText("    Average probes for failure searches: " + failureLinearProbes/(float) (trials*insertCount) + "\n\n");
 
         this.console.appendText("Double hashing\n");
         this.console.appendText("    Total probes for inserting data values: " + insertionDoubleProbes + "\n\n");
         this.console.appendText("       Average probes made: " + insertionDoubleProbes / (float) (trials * insertCount) + "\n\n");
         // ADD CODE HERE TO REPORT THE RESULTS FOR THE SUCCESS AND FAILURE SEARCHES
+        this.console.appendText("    Average probes for successful searches: " + successDoubleProbes/(float) (trials*insertCount) + "\n\n");
+        this.console.appendText("    Average probes for failure searches: " + failureDoubleProbes/(float) (trials*insertCount) + "\n\n");
 
         this.console.appendText("Perfect hashing\n");
         this.console.appendText("    Total probes for inserting data values: " + insertionPerfectProbes + "\n\n");
         this.console.appendText("       Average probes made: " + insertionPerfectProbes / (float) (trials * insertCount) + "\n\n");
-
         // ADD CODE HERE TO REPORT THE RESULTS FOR THE SUCCESS AND FAILURE SEARCHES
+        this.console.appendText("    Average probes for successful searches: " + successPerfectProbes/(float) (trials*insertCount) + "\n\n");
+        this.console.appendText("    Average probes for failure searches: " + failurePerfectProbes/(float) (trials*insertCount) + "\n\n");
     }
 
     private void RunHashTest(DictionaryInterface table) {
@@ -310,6 +339,28 @@ public class HashTableController implements Initializable {
     private void insertAllData(DictionaryInterface<String, String> dict, String[] data) {
         for (int i = 0; i < data.length; i++) {
             dict.add(data[i], data[i]);
+        }
+    }
+    
+    private void insertHalfData(DictionaryInterface<String, String> dict, String[] data){
+        for(int i = 0; i < (data.length/2); i++){
+            dict.add(data[i], data[i]);
+        }
+    }
+    
+    private void searchFirstHalf(DictionaryInterface<String, String> dict, String[] data){
+        for(int i = 0; i < (data.length/2); i++){
+            if(dict.contains(data[i])){
+                //do something
+            }
+        }
+    }
+    
+    private void searchSecondHalf(DictionaryInterface<String, String> dict, String[] data){
+        for(int i = (data.length/2) - 1; i < data.length; i++){
+            if(dict.contains(data[i])){
+                //do something
+            }
         }
     }
 
